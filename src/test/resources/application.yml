@@ -1,0 +1,3 @@
+mongo:
+  client: 'initial value'
+  other: 'other value'
