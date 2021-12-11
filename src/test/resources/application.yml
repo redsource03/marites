@@ -1,3 +1,7 @@
+spring:
+  application:
+    name: 'marites-secrets-api'
+
 mongo:
-  client: 'initial value'
-  other: 'other value'
+  database-name: 'test'
+  clusters: 'localhost:27017'

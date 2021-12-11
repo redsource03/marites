@@ -13,22 +13,33 @@ import java.util.Optional;
 
 @Slf4j
 public class TestContainerInit implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-    private static final MongoDBWrapperContainer MONGO_DB_CONTAINER = new MongoDBWrapperContainer();
+    private static final MongoDBWrapperContainer MONGO_DB_CONTAINER =
+            new MongoDBWrapperContainer();
     private static final String PROPERTY_FILE = "application.yml";
-    public static boolean INITIALIZED = false;
+    private static boolean initialized = false;
 
     @Override
-    public void initialize(ConfigurableApplicationContext applicationContext) {
+    public void initialize(
+            final ConfigurableApplicationContext applicationContext) {
         log.info("Starting Test Containers");
 
         val yamlFactory = new YamlPropertiesFactoryBean();
         yamlFactory.setResources(new ClassPathResource(PROPERTY_FILE));
-        val properties = Optional.ofNullable(yamlFactory.getObject()).orElseThrow();
-        if (!INITIALIZED) {
+        val properties =
+                Optional.ofNullable(yamlFactory.getObject()).orElseThrow();
+        if (!initialized) {
             MONGO_DB_CONTAINER.start();
             MONGO_DB_CONTAINER.setupProperties(properties);
-            applicationContext.getEnvironment().getPropertySources().addFirst(new PropertiesPropertySource(PROPERTY_FILE, yamlFactory.getObject()));
-            INITIALIZED = true;
+            applicationContext.getEnvironment()
+                    .getPropertySources()
+                    .addFirst(new PropertiesPropertySource(PROPERTY_FILE,
+                            properties));
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                log.info("Stopping test containers");
+                MONGO_DB_CONTAINER.stop();
+            }));
+            initialized = true;
         }
     }
 }

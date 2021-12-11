@@ -2,18 +2,31 @@ plugins {
 	id 'org.springframework.boot' version '2.6.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'checkstyle'
 }
 
 group = 'com.redsource.marites.secrets'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
+checkstyle {
+	configFile file("config/checkstyle/checkstyle.xml")
+}
+checkstyleMain {
+	source ='src/main/java'
+}
+checkstyleTest {
+	source ='src/test/java'
+}
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+	implementation 'io.projectreactor:reactor-core'
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -29,9 +42,20 @@ dependencies {
 	testImplementation 'org.testcontainers:testcontainers:1.16.2'
 	testImplementation 'org.testcontainers:junit-jupiter:1.16.2'
 
+	//TESTING
+	testImplementation 'io.projectreactor:reactor-test'
+
 
 	//JUNIT5
-	testImplementation('org.junit.jupiter:junit-jupiter-engine:5.8.2')
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
+	//CUCUMBER
+	testImplementation 'io.cucumber:cucumber-core:6.10.2'
+	testImplementation 'io.cucumber:cucumber-java:6.10.2'
+	testImplementation 'io.cucumber:cucumber-junit:6.10.2'
+	testImplementation 'io.cucumber:cucumber-spring:6.10.2'
+	testImplementation 'org.junit.vintage:junit-vintage-engine:5.7.2'
+
 }
 
 test {

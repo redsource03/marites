@@ -6,6 +6,8 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.Properties;
 
+import static java.lang.String.format;
+
 @Slf4j
 public class MongoDBWrapperContainer extends MongoDBContainer {
     private static final String DOCKER_IMAGE_NAME = "mongo:4.0.10";
@@ -25,9 +27,9 @@ public class MongoDBWrapperContainer extends MongoDBContainer {
         log.info("Stopping MongoDB Test Container");
     }
 
-    public void setupProperties (Properties properties) {
+    public void setupProperties(final Properties properties) {
         log.info("Overriding mongoDB properties");
-        properties.setProperty("mongo.client", this.getReplicaSetUrl());
+        properties.replace("mongo.clusters", format("%s:%s", getContainerIpAddress(), super.getFirstMappedPort()));
     }
 
 }

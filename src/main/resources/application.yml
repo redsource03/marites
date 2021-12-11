@@ -1,1 +1,7 @@
+spring:
+  application:
+    name: 'marites-secrets-api'
 
+mongo:
+  database-name: 'secrets'
+  clusters: 'localhost:27017'

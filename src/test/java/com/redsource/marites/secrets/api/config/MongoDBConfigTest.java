@@ -1,4 +1,4 @@
-package com.redsource.marites.secrets.api.integration;
+package com.redsource.marites.secrets.api.config;
 
 import com.redsource.marites.secrets.api.util.TestContainerInit;
 import lombok.Builder;
@@ -16,7 +16,7 @@ import reactor.test.StepVerifier;
 
 @SpringBootTest
 @ContextConfiguration(initializers = TestContainerInit.class)
-public class MongoDBIntegrationTest {
+class MongoDBConfigTest {
 
     @Autowired
     private ReactiveMongoTemplate reactiveMongoTemplate;
@@ -25,20 +25,11 @@ public class MongoDBIntegrationTest {
     @DisplayName("Application Should be able to save and retrieve to the MongoDB")
     public void mongoDBShouldInitialize() {
         val dummyName = "Dummy Master";
-        reactiveMongoTemplate.save(
-                MongoDBIntegrationTest
-                        .DummyModel.builder()
-                        .id("123")
-                        .name(dummyName)
-                        .build()
-        ).block();
+        reactiveMongoTemplate.save(DummyModel.builder().id("123").name(dummyName).build()).block();
 
-        StepVerifier.create(reactiveMongoTemplate.findAll(MongoDBIntegrationTest.DummyModel.class))
-                .assertNext(dummyModel -> {
-                    dummyModel.getName().equals(dummyName);
-                })
-                .expectComplete()
-                .verify();
+        StepVerifier.create(reactiveMongoTemplate.findAll(DummyModel.class)).assertNext(dummyModel -> {
+            dummyModel.getName().equals(dummyName);
+        }).expectComplete().verify();
 
     }
 
@@ -50,6 +41,5 @@ public class MongoDBIntegrationTest {
         private String id;
         private String name;
     }
-
 
 }
